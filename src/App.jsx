@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { IconFlame, IconPlus, IconLogout } from '@tabler/icons-react';
 
 import { useStorage, loadAll } from './hooks/useStorage';
@@ -44,6 +44,7 @@ export default function App() {
 
   const userId = session?.user?.id ?? null;
   const { save, saveStatus } = useStorage(userId);
+  const hydratedRef = useRef(false);
 
   // Auth listener — fires on sign-in, sign-out, and initial session check
   useEffect(() => {
@@ -98,13 +99,15 @@ export default function App() {
         stored.meta.lastActiveDate = today;
       }
       setMeta(stored.meta);
+      hydratedRef.current = true;
     }
 
     hydrate();
   }, [session]);
 
-  // Persist on every change
+  // Persist on every change — only after initial hydration to avoid wiping cloud with empty state
   useEffect(() => {
+    if (!hydratedRef.current) return;
     save(tasks, someday, meta);
   }, [tasks, someday, meta, save]);
 
