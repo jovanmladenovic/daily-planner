@@ -85,7 +85,7 @@ input, select {
 
 .app-header__date {
   font-family: var(--font-serif);
-  font-size: 1.5rem;
+  font-size: 3em;
   font-weight: 400;
   letter-spacing: -0.01em;
   color: var(--color-text-primary);
@@ -236,8 +236,8 @@ input, select {
 
 .task-title {
   display: block;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 16px;
+  font-weight: 500;
   color: var(--color-text-primary);
   word-break: break-word;
   margin-bottom: 6px;
@@ -833,5 +833,5 @@ input, select {
 @media (max-width: 480px) {
   .task-card__actions { opacity: 1; }
   .someday-item__actions { opacity: 1; }
-  .app-header__date { font-size: 1.3rem; }
+  .app-header__date { font-size: 2.2em; }
 }
