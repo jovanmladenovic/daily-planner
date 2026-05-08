@@ -302,6 +302,9 @@ export default function App() {
         <div className="app-header__top">
           <h1 className="app-header__date">{formatHeaderDate()}</h1>
           <div className="app-header__right">
+            <span className="save-indicator" data-status={saveStatus}>
+              {saveStatus === 'saving' ? 'Saving…' : 'Saved ✓'}
+            </span>
             {streak > 0 && (
               <span className={streakClass()}>
                 <IconFlame size={13} />
@@ -320,9 +323,6 @@ export default function App() {
           </div>
         </div>
         <ProgressBar done={countDone} total={countTotal} />
-        <span className="save-indicator" data-status={saveStatus}>
-          {saveStatus === 'saving' ? 'Saving…' : 'Saved ✓'}
-        </span>
       </header>
 
       <nav className="tab-bar">

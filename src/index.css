@@ -98,9 +98,6 @@ input, select {
 }
 
 .save-indicator {
-  position: absolute;
-  bottom: 6px;
-  right: 16px;
   font-size: 11px;
   color: var(--color-text-tertiary);
   opacity: 0;
