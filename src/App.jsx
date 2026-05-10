@@ -46,22 +46,25 @@ export default function App() {
   const { save, saveStatus } = useStorage(userId);
   const hydratedRef = useRef(false);
 
-  // Auth listener — fires on sign-in, sign-out, and initial session check
+  // Auth listener — onAuthStateChange fires with INITIAL_SESSION on load,
+  // so getSession() is redundant and causes double hydration. Use one source only.
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session ?? null));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s ?? null));
     return () => subscription.unsubscribe();
   }, []);
 
-  // Hydrate data: cloud first when logged in, localStorage fallback
+  // Hydrate data: re-runs only when the user identity changes (not on token refresh).
+  // Keyed on userId so session token refreshes don't re-trigger.
   useEffect(() => {
-    if (session === undefined) return; // still loading auth
+    if (session === undefined) return; // still resolving auth
+
+    hydratedRef.current = false; // block saves while loading
 
     async function hydrate() {
       let stored;
-      if (session) {
+      if (userId) {
         try {
-          const cloud = await loadFromCloud(session.user.id);
+          const cloud = await loadFromCloud(userId);
           const local = loadAll();
 
           // First-time login: if cloud is empty but local has data, migrate local → cloud
@@ -69,8 +72,7 @@ export default function App() {
           const localHasData = local.tasks.length > 0 || local.someday.length > 0;
           if (cloudIsEmpty && localHasData) {
             stored = local;
-            // Upload local data to cloud immediately
-            await saveToCloud(session.user.id, local.tasks, local.someday, local.meta);
+            await saveToCloud(userId, local.tasks, local.someday, local.meta);
           } else {
             stored = cloud;
           }
@@ -99,13 +101,13 @@ export default function App() {
         stored.meta.lastActiveDate = today;
       }
       setMeta(stored.meta);
-      hydratedRef.current = true;
+      hydratedRef.current = true; // open saves only after data is loaded
     }
 
     hydrate();
-  }, [session]);
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Persist on every change — only after initial hydration to avoid wiping cloud with empty state
+  // Persist on every change — guard ensures this never fires before hydration
   useEffect(() => {
     if (!hydratedRef.current) return;
     save(tasks, someday, meta);
