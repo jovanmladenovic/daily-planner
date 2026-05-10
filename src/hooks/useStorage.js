@@ -53,7 +53,8 @@ export function useStorage(userId) {
         setTimeout(() => setSaveStatus('idle'), 1500);
       } catch (e) {
         console.error('Cloud save failed', e);
-        setSaveStatus('idle');
+        setSaveStatus('error');
+        setTimeout(() => setSaveStatus('idle'), 4000);
       }
     }, 400);
   }, [userId]);

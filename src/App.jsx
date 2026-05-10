@@ -305,7 +305,7 @@ export default function App() {
           <h1 className="app-header__date">{formatHeaderDate()}</h1>
           <div className="app-header__right">
             <span className="save-indicator" data-status={saveStatus}>
-              {saveStatus === 'saving' ? 'Saving…' : 'Saved ✓'}
+              {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'error' ? 'Save failed ✕' : 'Saved ✓'}
             </span>
             {streak > 0 && (
               <span className={streakClass()}>

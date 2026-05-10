@@ -105,8 +105,12 @@ input, select {
   pointer-events: none;
 }
 .save-indicator[data-status="saving"],
-.save-indicator[data-status="saved"] {
+.save-indicator[data-status="saved"],
+.save-indicator[data-status="error"] {
   opacity: 1;
+}
+.save-indicator[data-status="error"] {
+  color: var(--color-danger, #e53e3e);
 }
 
 /* ── Streak pill ────────────────────────────────────────────────────────── */
