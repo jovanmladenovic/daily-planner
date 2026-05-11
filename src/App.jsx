@@ -32,6 +32,7 @@ function initNid(tasks, someday) {
 
 export default function App() {
   const [session,     setSession]     = useState(undefined); // undefined = loading
+  const [recovering,  setRecovering]  = useState(false);    // true when clicked a password-reset link
   const [tasks,       setTasks]       = useState([]);
   const [someday,     setSomeday]     = useState([]);
   const [meta,        setMeta]        = useState({ lastActiveDate: null, streakDates: [], longestStreak: 0 });
@@ -49,7 +50,10 @@ export default function App() {
   // Auth listener — onAuthStateChange fires with INITIAL_SESSION on load,
   // so getSession() is redundant and causes double hydration. Use one source only.
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s ?? null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
+      if (event === 'PASSWORD_RECOVERY') setRecovering(true);
+      setSession(s ?? null);
+    });
     return () => subscription.unsubscribe();
   }, []);
 
@@ -298,7 +302,7 @@ export default function App() {
   if (session === undefined) return null; // auth loading
 
   return (
-    <AuthGate session={session}>
+    <AuthGate session={session} recovering={recovering} onPasswordUpdated={() => setRecovering(false)}>
     <div className="app">
       <header className="app-header">
         <div className="app-header__top">
