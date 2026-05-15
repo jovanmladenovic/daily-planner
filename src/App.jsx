@@ -408,26 +408,6 @@ export default function App() {
               </div>
             )}
 
-            <form className="add-form" onSubmit={addTask}>
-              <input
-                className="add-form__input"
-                placeholder="Add a task…"
-                value={newTitle}
-                onChange={e => setNewTitle(e.target.value)}
-              />
-              <select
-                className="add-form__select"
-                value={newCat}
-                onChange={e => setNewCat(e.target.value)}
-              >
-                {CATEGORIES.map(c => (
-                  <option key={c.id} value={c.id}>{c.label}</option>
-                ))}
-              </select>
-              <button className="add-form__btn" type="submit">
-                <IconPlus size={16} />
-              </button>
-            </form>
           </>
         )}
 
@@ -449,6 +429,29 @@ export default function App() {
           />
         )}
       </main>
+
+      {activeTab === 'today' && (
+        <form className="add-form" onSubmit={addTask}>
+          <input
+            className="add-form__input"
+            placeholder="Add a task…"
+            value={newTitle}
+            onChange={e => setNewTitle(e.target.value)}
+          />
+          <select
+            className="add-form__select"
+            value={newCat}
+            onChange={e => setNewCat(e.target.value)}
+          >
+            {CATEGORIES.map(c => (
+              <option key={c.id} value={c.id}>{c.label}</option>
+            ))}
+          </select>
+          <button className="add-form__btn" type="submit">
+            <IconPlus size={16} />
+          </button>
+        </form>
+      )}
     </div>
     </AuthGate>
   );
